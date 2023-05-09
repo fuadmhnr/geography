@@ -121,4 +121,30 @@ public class ProvinceController : Controller
     return NoContent();
   }
 
+  [HttpDelete("{id}")]
+  [ProducesResponseType(204)]
+  [ProducesResponseType(400)]
+  [ProducesResponseType(404)]
+  public IActionResult DeleteProvince(int id)
+  {
+    if (!_provinceRepository.isProvinceExist(id))
+    {
+      return NotFound();
+    }
+
+    var provinceToDelete = _provinceRepository.GetProvince(id);
+
+    if (!ModelState.IsValid)
+    {
+      return BadRequest(ModelState);
+    }
+
+    if (!_provinceRepository.DeleteProvince(provinceToDelete))
+    {
+      ModelState.AddModelError("", "Something went wrong deleting province");
+    }
+
+    return NoContent();
+  }
+
 }

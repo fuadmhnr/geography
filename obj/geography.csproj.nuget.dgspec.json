@@ -68,6 +68,10 @@
               "target": "Package",
               "version": "[7.0.2, )"
             },
+            "Microsoft.IdentityModel.Tokens": {
+              "target": "Package",
+              "version": "[6.30.0, )"
+            },
             "MySql.EntityFrameworkCore": {
               "target": "Package",
               "version": "[7.0.2, )"
@@ -75,6 +79,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.4.0, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[6.30.0, )"
             }
           },
           "imports": [

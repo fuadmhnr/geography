@@ -3,6 +3,7 @@ using Geography.Interfaces;
 using Geography.Models;
 using AutoMapper;
 using Geography.Dto;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Geography.Controllers;
 
@@ -21,7 +22,7 @@ public class CountryController : Controller
     _provinceRepository = provinceRepository;
   }
 
-  [HttpGet]
+  [HttpGet, Authorize(Roles = "admin")]
   [ProducesResponseType(200, Type = typeof(IEnumerable<Country>))]
   public IActionResult GetCountries()
   {

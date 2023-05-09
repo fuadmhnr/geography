@@ -110,11 +110,13 @@ public class CountryController : Controller
       return BadRequest();
     }
 
-    var countryMap = _mapper.Map<Country>(requestDto);
+    var countryToUpdate = _countryRepository.GetCountry(id);
+
+    _mapper.Map(requestDto, countryToUpdate);
     
-    if(!_countryRepository.UpdateCountry(countryMap))
+    if(!_countryRepository.UpdateCountry(countryToUpdate))
     {
-      ModelState.AddModelError("", "Something when wrong while updating");
+      ModelState.AddModelError("payload", "Something when wrong while updating");
       return StatusCode(500, ModelState);
     }
 

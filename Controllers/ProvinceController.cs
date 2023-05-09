@@ -87,4 +87,38 @@ public class ProvinceController : Controller
     return Ok("Province successfully created");
   }
 
+  [HttpPut("{id}")]
+  [ProducesResponseType(204)]
+  [ProducesResponseType(400)]
+  [ProducesResponseType(404)]
+  public IActionResult UpdateCountry(int id, [FromBody] ProvinceRequestDto requestDto)
+  {
+    if(requestDto is null)
+    {
+      return BadRequest(ModelState);
+    }
+
+    if(!_provinceRepository.isProvinceExist(id))
+    {
+      return NotFound();
+    }
+
+    if(!ModelState.IsValid)
+    {
+      return BadRequest(ModelState);
+    }
+
+    var provinceToUpdate = _provinceRepository.GetProvince(id);
+
+    _mapper.Map(requestDto, provinceToUpdate);
+
+    if(!_provinceRepository.UpdateProvince(provinceToUpdate))
+    {
+      ModelState.AddModelError("payload", "Something went wrong while updating");
+      return StatusCode(500, ModelState);
+    }
+
+    return NoContent();
+  }
+
 }

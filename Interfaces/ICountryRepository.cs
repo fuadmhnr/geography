@@ -9,5 +9,6 @@ public interface ICountryRepository
   Country GetCountry(int id);
   bool isCountryExist(int id);
   bool CreateCountry(Country country);
+  bool UpdateCountry(Country country);
   bool Save();
 }

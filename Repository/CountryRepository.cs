@@ -1,6 +1,7 @@
 using Geography.Data;
 using Geography.Interfaces;
 using Geography.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Geography.Repository;
 
@@ -19,7 +20,7 @@ public class CountryRepository : ICountryRepository
 
   public Country GetCountry(int id)
   {
-    return _context.Countries.Where(c => c.id == id).SingleOrDefault();
+    return _context.Countries.Where(c => c.id == id).Include(p => p.provinces).FirstOrDefault();
   }
 
   public bool isCountryExist(int id)

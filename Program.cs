@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Geography.Data;
 using Geography.Interfaces;
 using Geography.Repository;
@@ -8,7 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
+builder.Services.AddScoped<IProvinceRepository, ProvinceRepository>();
+
 builder.Services.AddDbContext<DataContext>(options =>
 {
   options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection"));

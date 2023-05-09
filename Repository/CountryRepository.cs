@@ -21,4 +21,9 @@ public class CountryRepository : ICountryRepository
   {
     return _context.Countries.Where(c => c.id == id).SingleOrDefault();
   }
+
+  public bool isCountryExist(int id)
+  {
+    return _context.Countries.Any(c => c.id == id);
+  }
 }

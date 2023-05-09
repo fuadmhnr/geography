@@ -1,4 +1,5 @@
 using Geography.Data;
+using Geography.Dto;
 using Geography.Interfaces;
 using Geography.Models;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,13 @@ public class CountryRepository : ICountryRepository
   {
     _context = context;
   }
+
+  public bool CreateCountry(Country country)
+  {
+    _context.Add(country);
+    return Save();
+  }
+
   public ICollection<Country> GetCountries()
   {
     return _context.Countries.ToList();
@@ -26,5 +34,11 @@ public class CountryRepository : ICountryRepository
   public bool isCountryExist(int id)
   {
     return _context.Countries.Any(c => c.id == id);
+  }
+
+  public bool Save()
+  {
+    var saved = _context.SaveChanges();
+    return saved > 0;
   }
 }

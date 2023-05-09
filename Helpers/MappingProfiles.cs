@@ -10,5 +10,7 @@ public class MappingProfiles : Profile
   {
     CreateMap<Province, ProvinceDto>();
     CreateMap<Country, CountryDto>();
+    CreateMap<Country, CountryRequestDto>();
+    CreateMap<CountryRequestDto, Country>();
   }
 }

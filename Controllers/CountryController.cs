@@ -53,4 +53,38 @@ public class CountryController : Controller
     return Ok(country);
   }
 
+  [HttpPost]
+  [ProducesResponseType(204)]
+  [ProducesResponseType(400)]
+  public IActionResult CreateCountry([FromBody] CountryRequestDto requestDto)
+  {
+    if(requestDto is null)
+    {
+      return BadRequest(ModelState);
+    }
+
+    var existingCountry = _countryRepository.GetCountries().Where(c => c.name.Trim().ToUpper() == requestDto.name.Trim().ToUpper()).FirstOrDefault();
+
+    if(existingCountry != null)
+    {
+      ModelState.AddModelError("", "Country already exist");
+      return StatusCode(422, ModelState);
+    }
+
+    if(!ModelState.IsValid)
+    {
+      return BadRequest(ModelState);
+    }
+
+    var countryMap = _mapper.Map<Country>(requestDto);
+
+    if(!_countryRepository.CreateCountry(countryMap))
+    {
+      ModelState.AddModelError("", "Something went wrong while saving!");
+      return StatusCode(500, ModelState);
+    }
+
+    return Ok("Country successfully created");
+  }
+
 }

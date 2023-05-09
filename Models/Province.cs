@@ -12,5 +12,4 @@ public class Province
   [ForeignKey("country")]
   public int country_id { get; set; }
   public Country country { get; set; }
-
 }

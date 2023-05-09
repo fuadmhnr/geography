@@ -10,12 +10,12 @@ namespace Geography.Controllers;
 [ApiController]
 public class ProvinceController : Controller
 {
-  private readonly IProvinceRepository _ProvinceRepository;
+  private readonly IProvinceRepository _provinceRepository;
   private readonly IMapper _mapper;
 
-  public ProvinceController(IProvinceRepository ProvinceRepository, IMapper mapper)
+  public ProvinceController(IProvinceRepository provinceRepository, IMapper mapper)
   {
-    _ProvinceRepository = ProvinceRepository;
+    _provinceRepository = provinceRepository;
     _mapper = mapper;
   }
 
@@ -23,7 +23,7 @@ public class ProvinceController : Controller
   [ProducesResponseType(200, Type = typeof(IEnumerable<Province>))]
   public IActionResult GetProvinces()
   {
-    var provinces = _mapper.Map<List<ProvinceDto>>(_ProvinceRepository.GetProvinces());
+    var provinces = _mapper.Map<List<ProvinceDto>>(_provinceRepository.GetProvinces());
 
     if(!ModelState.IsValid)
     {
@@ -38,12 +38,12 @@ public class ProvinceController : Controller
   [ProducesResponseType(400)]
   public IActionResult GetProvince(int id)
   {
-    if(!_ProvinceRepository.isProvinceExist(id))
+    if(!_provinceRepository.isProvinceExist(id))
     {
       return NotFound();
     }
 
-    var Province = _ProvinceRepository.GetProvince(id);
+    var Province = _provinceRepository.GetProvince(id);
 
     if(!ModelState.IsValid)
     {
@@ -51,6 +51,40 @@ public class ProvinceController : Controller
     }
 
     return Ok(Province);
+  }
+
+  [HttpPost]
+  [ProducesResponseType(204)]
+  [ProducesResponseType(400)]
+  public IActionResult CreateProvince([FromBody] ProvinceRequestDto requestDto)
+  {
+    if (requestDto is null)
+    {
+      return BadRequest(ModelState);
+    }
+
+    var existingProvince = _provinceRepository.GetProvinces().Where(p => p.name.Trim().ToUpper() == requestDto.name.Trim().ToUpper() && p.country_id == requestDto.country_id).SingleOrDefault();
+
+    if(existingProvince != null)
+    {
+      ModelState.AddModelError("payload", "Province already exists");
+      return StatusCode(422, ModelState);
+    }
+
+    if(!ModelState.IsValid)
+    {
+      return BadRequest(ModelState);
+    }
+
+    var provinceMap = _mapper.Map<Province>(requestDto);
+
+    if(!_provinceRepository.CreateProvince(provinceMap))
+    {
+      ModelState.AddModelError("", "Something went wrong while saving");
+      return StatusCode(500, ModelState);
+    }
+
+    return Ok("Province successfully created");
   }
 
 }

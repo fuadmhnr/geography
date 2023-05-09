@@ -32,4 +32,28 @@ public class ProvinceRepository : IProvinceRepository
   {
     return _context.Provinces.Where(p => p.country_id == id).ToList();
   }
+
+  public bool CreateProvince(Province province)
+  {
+    _context.Add(province);
+    return Save();
+  }
+
+  public bool UpdateProvince(Province province)
+  {
+    _context.Update(province);
+    return Save();
+  }
+
+  public bool DeleteProvince(Province province)
+  {
+    _context.Remove(province);
+    return Save();
+  }
+
+  public bool Save()
+  {
+    var saved = _context.SaveChanges();
+    return saved > 0;
+  }
 }

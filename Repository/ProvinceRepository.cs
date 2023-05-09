@@ -27,4 +27,9 @@ public class ProvinceRepository : IProvinceRepository
   {
     return _context.Provinces.Any(p => p.id == id);
   }
+
+  public ICollection<Province> GetProvincesByCountry(int id)
+  {
+    return _context.Provinces.Where(p => p.country_id == id).ToList();
+  }
 }

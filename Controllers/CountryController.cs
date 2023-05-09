@@ -11,12 +11,14 @@ namespace Geography.Controllers;
 public class CountryController : Controller
 {
   private readonly ICountryRepository _countryRepository;
+  private readonly IProvinceRepository _provinceRepository;
   private readonly IMapper _mapper;
 
-  public CountryController(ICountryRepository countryRepository, IMapper mapper)
+  public CountryController(ICountryRepository countryRepository, IMapper mapper, IProvinceRepository provinceRepository)
   {
     _countryRepository = countryRepository;
     _mapper = mapper;
+    _provinceRepository = provinceRepository;
   }
 
   [HttpGet]
@@ -117,8 +119,37 @@ public class CountryController : Controller
     }
 
     return NoContent();
-
-
   }
 
+  [HttpDelete("{id}")]
+  [ProducesResponseType(204)]
+  [ProducesResponseType(400)]
+  [ProducesResponseType(404)]
+  public IActionResult DeleteCountry(int id)
+  {
+    if(!_countryRepository.isCountryExist(id))
+    {
+      return NotFound();
+    }
+
+    var countryToDelete = _countryRepository.GetCountry(id);
+
+    if(_provinceRepository.GetProvincesByCountry(id).Count > 0)
+    {
+      ModelState.AddModelError("", "This country have related province data");
+      return StatusCode(422, ModelState);
+    }
+
+    if(!ModelState.IsValid)
+    {
+      return BadRequest(ModelState);
+    }
+
+    if(!_countryRepository.DeleteCountry(countryToDelete))
+    {
+      ModelState.AddModelError("", "Something went wrong deleting country");
+    }
+
+    return NoContent();
+  }
 }

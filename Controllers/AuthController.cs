@@ -3,7 +3,9 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using Geography.Data;
 using Geography.Dto;
+using Geography.Interfaces;
 using Geography.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -16,12 +18,28 @@ public class AuthController : Controller
   public static User user = new User();
   private readonly DataContext _context;
   private readonly IConfiguration _configuration;
+  private readonly IUserRepository _userRepository;
 
-  public AuthController(DataContext context, IConfiguration configuration)
+  public AuthController(DataContext context, IConfiguration configuration, IUserRepository userRepository)
   {
     _context = context;
     _configuration = configuration;
+    _userRepository = userRepository;
   }
+
+
+  [HttpGet("get-me"), Authorize]
+  public IActionResult GetMe()
+  {
+    // // var username = User?.Identity?.Name;
+    // var username = User.FindFirstValue(ClaimTypes.Name);
+    // var role = User.FindFirstValue(ClaimTypes.Role);
+    // return Ok(new {username, role});
+
+    var username = _userRepository.GetMe();
+    return Ok(username);
+  }
+
 
   [HttpPost("register")]
   public IActionResult Register(UserDto request)

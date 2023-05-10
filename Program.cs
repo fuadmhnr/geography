@@ -19,6 +19,8 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 builder.Services.AddScoped<IProvinceRepository, ProvinceRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddDbContext<DataContext>(options =>
 {
